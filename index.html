@@ -1,49 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encriptación Hill</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hill Cipher — Encriptar / Desencriptar</title>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="particles" id="particles"></div>
-    
-    <div class="container">
-        <h1>Encriptación Hill</h1>
-        
-        <div class="section">
-            <label for="mensaje">Mensaje (máx. 30 caracteres)</label>
-            <textarea id="mensaje" maxlength="30" placeholder="Escribe tu mensaje aquí..."></textarea>
-            <div class="char-count">0/30</div>
+  <!-- partículas decorativas (opcional) -->
+  <div id="particles" class="particles" aria-hidden="true"></div>
+
+  <main class="container" role="main">
+    <header class="site-header">
+      <h1>Hill Cipher — Encriptador</h1>
+      <p class="subtitle">Introduce tu texto, configura la matriz 2×2 y usa Encriptar / Desencriptar.</p>
+    </header>
+
+    <!-- Entrada de texto -->
+    <section class="section">
+      <label for="mensaje" class="kicker">Mensaje</label>
+      <textarea id="mensaje" placeholder="Escribe o pega aquí tu texto (se respetan mayúsculas y caracteres no alfabéticos)"></textarea>
+      <div class="char-count" aria-live="polite">0/30</div>
+    </section>
+
+    <!-- Matriz clave y matriz visual -->
+    <section class="section">
+      <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;">
+        <div>
+          <div class="kicker">Clave (matriz 2×2)</div>
+          <div class="matriz-input" aria-label="Matriz clave">
+            <input id="k11" type="number" value="3" aria-label="k11">
+            <input id="k12" type="number" value="3" aria-label="k12">
+            <input id="k21" type="number" value="2" aria-label="k21">
+            <input id="k22" type="number" value="5" aria-label="k22">
+          </div>
         </div>
 
-        <div class="section">
-            <h3>Matriz del mensaje</h3>
-            <div id="matrizMensaje" class="matriz-display"></div>
+        <div style="flex:1;min-width:220px;">
+          <div class="kicker">Matriz (valores numéricos)</div>
+          <div id="matrizMensaje" class="matriz-display" aria-live="polite">Escribe un mensaje primero...</div>
         </div>
+      </div>
+    </section>
 
-        <div class="section">
-            <h3>Matriz clave (2x2)</h3>
-            <div class="matriz-input">
-                <input type="number" id="k11" placeholder="a">
-                <input type="number" id="k12" placeholder="b">
-                <input type="number" id="k21" placeholder="c">
-                <input type="number" id="k22" placeholder="d">
-            </div>
-        </div>
+    <!-- Botones -->
+    <section class="section">
+      <div class="button-group" role="toolbar" aria-label="Acciones">
+        <button id="encriptar" class="btn btn--gold" type="button">🔐 Encriptar</button>
+        <button id="desencriptar" class="btn" type="button">🔓 Desencriptar</button>
+        <button id="copiarResultado" class="btn btn--muted" type="button" title="Copiar resultado">📋 Copiar</button>
+      </div>
 
-        <div class="button-group">
-            <button id="encriptar">Encriptar</button>
-            <button id="desencriptar">Desencriptar</button>
-        </div>
+      <!-- Toggle de padding (se inyecta también desde JS si falta) -->
+      <div style="margin-top:10px;">
+        <label class="padding-toggle" for="force-remove-x" id="padding-toggle-manual">
+          <input id="force-remove-x" type="checkbox" style="width:18px;height:18px;margin-right:8px;">
+          Quitar padding final (X)
+        </label>
+      </div>
+    </section>
 
-        <div class="section">
-            <h3>Resultado</h3>
-            <div id="resultado" class="resultado-box"></div>
-        </div>
-    </div>
+    <!-- Resultado -->
+    <section class="section">
+      <div class="kicker">Resultado</div>
+      <div id="resultado" class="resultado-box" aria-live="polite" role="status">Aquí aparecerá el resultado.</div>
+    </section>
+  </main>
 
-    <script src="script.js"></script>
+  <!-- Script -->
+  <script src="script.js"></script>
+
+  <script>
+    // Pequeño helper para el botón "Copiar" (no requiere cambios en tu script principal)
+    (function(){
+      const copiar = document.getElementById('copiarResultado');
+      const resultado = document.getElementById('resultado');
+      if (!copiar || !resultado) return;
+      copiar.addEventListener('click', async () => {
+        try {
+          const text = resultado.textContent || '';
+          await navigator.clipboard.writeText(text);
+          const prev = copiar.textContent;
+          copiar.textContent = '✅ Copiado';
+          setTimeout(() => copiar.textContent = prev, 1200);
+        } catch (e) {
+          copiar.textContent = '❌ Error';
+          setTimeout(() => copiar.textContent = '📋 Copiar', 1200);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
